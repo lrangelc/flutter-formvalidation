@@ -19,6 +19,15 @@ class HomePage extends StatelessWidget {
           Text('Password: ${bloc.password}'),
         ],
       ),
+      floatingActionButton: _crearBoton(context),
+    );
+  }
+
+  _crearBoton(BuildContext context) {
+    return FloatingActionButton(
+      child: Icon(Icons.add),
+      backgroundColor: Colors.deepPurple,
+      onPressed: () => Navigator.pushNamed(context, 'producto'),
     );
   }
 }
