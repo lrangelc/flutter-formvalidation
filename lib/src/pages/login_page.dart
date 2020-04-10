@@ -58,7 +58,7 @@ class LoginPage extends StatelessWidget {
                 SizedBox(
                   height: 30.0,
                 ),
-                _crearBoton()
+                _crearBoton(context, bloc)
               ],
             ),
           ),
@@ -86,7 +86,8 @@ class LoginPage extends StatelessWidget {
                 ),
                 hintText: 'ejemplo@correo.com',
                 labelText: 'Email',
-                counterText: snapshot.data),
+                counterText: snapshot.data,
+                errorText: snapshot.error),
             onChanged: bloc.changeEmail,
           ),
         );
@@ -103,13 +104,13 @@ class LoginPage extends StatelessWidget {
           child: TextField(
             obscureText: true,
             decoration: InputDecoration(
-              icon: Icon(
-                Icons.lock_outline,
-                color: Colors.deepPurple,
-              ),
-              labelText: 'Password',
-              counterText: snapshot.data,
-            ),
+                icon: Icon(
+                  Icons.lock_outline,
+                  color: Colors.deepPurple,
+                ),
+                labelText: 'Password',
+                counterText: snapshot.data,
+                errorText: snapshot.error),
             onChanged: bloc.changePassword,
           ),
         );
@@ -117,18 +118,30 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  Widget _crearBoton() {
-    return RaisedButton(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-        child: Text('Sign In'),
-      ),
-      onPressed: () {},
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-      elevation: 0.0,
-      color: Colors.deepPurple,
-      textColor: Colors.white,
+  Widget _crearBoton(BuildContext context, LoginBloc bloc) {
+    return StreamBuilder(
+      stream: bloc.formValidStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return RaisedButton(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
+            child: Text('Sign In'),
+          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+          elevation: 0.0,
+          color: Colors.deepPurple,
+          textColor: Colors.white,
+          onPressed: (snapshot.hasData ? () => _login(context, bloc) : null),
+        );
+      },
     );
+  }
+
+  _login(BuildContext context, LoginBloc bloc) {
+    print('Email: ${bloc.email}');
+    print('Password: ${bloc.password}');
+    Navigator.pushReplacementNamed(context, 'home');
   }
 
   Widget _crearFondo(BuildContext context) {
