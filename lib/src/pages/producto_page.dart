@@ -114,10 +114,8 @@ class _ProductoPageState extends State<ProductoPage> {
           fit: BoxFit.cover,
         );
       } else {
-        return Image(
-          image: AssetImage('assets/loading.gif'),
-          height: 200.0,
-          fit: BoxFit.cover,
+        return Center(
+          child: CircularProgressIndicator(),
         );
       }
     } else {

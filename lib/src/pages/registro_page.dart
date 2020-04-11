@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:formavalidation/src/blocs/provider.dart';
 import 'package:formavalidation/src/providers/usuario_provider.dart';
 
-class LoginPage extends StatelessWidget {
+class RegistroPage extends StatelessWidget {
   final usuarioProvider = new UsuarioProvider();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +47,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Login',
+                  'Crear cuenta',
                   style: TextStyle(fontSize: 20.0),
                 ),
                 SizedBox(
@@ -66,9 +66,8 @@ class LoginPage extends StatelessWidget {
             ),
           ),
           FlatButton(
-            child: Text('Crear una nueva cuenta'),
-            onPressed: () =>
-                Navigator.pushReplacementNamed(context, 'registro'),
+            child: Text('Ya tienes una cuenta? login'),
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
           ),
           SizedBox(
             height: 100.0,
@@ -139,16 +138,17 @@ class LoginPage extends StatelessWidget {
           elevation: 0.0,
           color: Colors.deepPurple,
           textColor: Colors.white,
-          onPressed: (snapshot.hasData ? () => _login(context, bloc) : null),
+          onPressed: (snapshot.hasData ? () => _register(context, bloc) : null),
         );
       },
     );
   }
 
-  _login(BuildContext context, LoginBloc bloc) {
+  _register(BuildContext context, LoginBloc bloc) {
     print('Email: ${bloc.email}');
     print('Password: ${bloc.password}');
-    usuarioProvider.login(bloc.email, bloc.password);
+
+    usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
     // Navigator.pushReplacementNamed(context, 'home');
   }
 
