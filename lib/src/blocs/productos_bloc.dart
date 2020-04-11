@@ -4,6 +4,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:formavalidation/src/providers/productos_provider.dart';
 import 'package:formavalidation/src/models/producto_model.dart';
 
+import '../models/producto_model.dart';
+
 class ProductosBloc {
   final _productosController = new BehaviorSubject<List<ProductoModel>>();
   final _cargandoController = new BehaviorSubject<bool>();
@@ -23,11 +25,13 @@ class ProductosBloc {
   void agregarProducto(ProductoModel producto) async {
     _cargandoController.sink.add(true);
     await _productosProvider.crearProducto(producto);
+    cargarProductos();
     _cargandoController.sink.add(false);
   }
 
   void editarProducto(ProductoModel producto) async {
     await _productosProvider.editarProducto(producto);
+    cargarProductos();
   }
 
   void borrarProducto(String id) async {

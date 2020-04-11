@@ -139,6 +139,7 @@ class _ProductoPageState extends State<ProductoPage> {
   }
 
   void _submit() async {
+    // try {
     if (!formKey.currentState.validate()) return;
 
     formKey.currentState.save();
@@ -152,7 +153,9 @@ class _ProductoPageState extends State<ProductoPage> {
     print('Precio: ${producto.valor}');
 
     if (foto != null) {
+      print('Foto Path: ${foto.path}');
       producto.fotoUrl = await productosBloc.subirFoto(foto);
+      print('Foto Url: ${producto.fotoUrl}');
     }
 
     if (producto.id == null) {
@@ -175,6 +178,9 @@ class _ProductoPageState extends State<ProductoPage> {
     mostrarSnackbar('Registro Guardado');
 
     Navigator.pop(context);
+    // } catch (err) {
+    //   print(err);
+    // }
   }
 
   void mostrarSnackbar(String mensaje) {
@@ -212,12 +218,16 @@ class _ProductoPageState extends State<ProductoPage> {
   }
 
   _obtenerImagen(ImageSource origen) async {
-    foto = await ImagePicker.pickImage(source: origen);
+    try {
+      foto = await ImagePicker.pickImage(source: origen);
 
-    if (foto != null) {
-      producto.fotoUrl = null;
+      if (foto != null) {
+        producto.fotoUrl = null;
+      }
+
+      setState(() {});
+    } catch (err) {
+      print(err);
     }
-
-    setState(() {});
   }
 }
