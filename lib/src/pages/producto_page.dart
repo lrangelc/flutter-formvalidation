@@ -52,6 +52,7 @@ class _ProductoPageState extends State<ProductoPage> {
                 _crearNombre(),
                 _crearPrecio(),
                 _crearDisponible(),
+                _uploading(),
                 _crearBoton(),
               ],
             ),
@@ -104,6 +105,26 @@ class _ProductoPageState extends State<ProductoPage> {
     );
   }
 
+  Widget _uploading() {
+    if (_guardando) {
+      if (foto != null) {
+        return Image(
+          image: AssetImage('assets/uploading.gif'),
+          height: 200.0,
+          fit: BoxFit.cover,
+        );
+      } else {
+        return Image(
+          image: AssetImage('assets/loading.gif'),
+          height: 200.0,
+          fit: BoxFit.cover,
+        );
+      }
+    } else {
+      return Container();
+    }
+  }
+
   Widget _crearBoton() {
     return RaisedButton.icon(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -123,10 +144,16 @@ class _ProductoPageState extends State<ProductoPage> {
     setState(() {
       _guardando = true;
     });
+
     print('Todo OK!');
     print('Producto: ${producto.titulo}');
     print('Precio: ${producto.valor}');
+
     final productoProvider = new ProductosProvider();
+
+    if (foto != null) {
+      producto.fotoUrl = await productoProvider.subirImagen(foto);
+    }
 
     if (producto.id == null) {
       final FormatResult resCrear =
@@ -159,7 +186,12 @@ class _ProductoPageState extends State<ProductoPage> {
 
   Widget _mostrarFoto() {
     if (producto.fotoUrl != null) {
-      return Container();
+      return FadeInImage(
+          image: NetworkImage(producto.fotoUrl),
+          placeholder: AssetImage('assets/jar-loading.gif'),
+          height: 300.0,
+          width: double.infinity,
+          fit: BoxFit.cover);
     } else {
       return Image(
         image: AssetImage(foto?.path ?? 'assets/no-image.png'),
@@ -181,7 +213,7 @@ class _ProductoPageState extends State<ProductoPage> {
     foto = await ImagePicker.pickImage(source: origen);
 
     if (foto != null) {
-      // limpieza
+      producto.fotoUrl = null;
     }
 
     setState(() {});

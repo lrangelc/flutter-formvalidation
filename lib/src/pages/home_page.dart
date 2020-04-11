@@ -49,19 +49,43 @@ class HomePage extends StatelessWidget {
 
   Widget _crearItem(BuildContext context, ProductoModel producto) {
     return Dismissible(
-      key: UniqueKey(),
-      background: Container(
-        color: Colors.red,
-      ),
-      onDismissed: (direccion) {
-        productosProvider.borrarProducto(producto.id);
-        print(direccion);
-      },
-      child: ListTile(
-        title: Text('${producto.titulo} - ${producto.valor}'),
-        subtitle: Text(producto.id),
-        onTap: () => Navigator.pushNamed(context, 'producto',arguments: producto),
-      ),
-    );
+        key: UniqueKey(),
+        background: Container(
+          color: Colors.red,
+        ),
+        onDismissed: (direccion) {
+          productosProvider.borrarProducto(producto.id);
+          print(direccion);
+        },
+        child: Card(
+          child: Column(
+            children: <Widget>[
+              (producto.fotoUrl == null)
+                  ? Image(
+                      image: AssetImage('assets/no-image.png'),
+                      height: 300.0,
+                      fit: BoxFit.cover,
+                    )
+                  : FadeInImage(
+                      image: NetworkImage(producto.fotoUrl),
+                      placeholder: AssetImage('assets/jar-loading.gif'),
+                      height: 300.0,
+                      width: double.infinity,
+                      fit: BoxFit.cover),
+              ListTile(
+                title: Text('${producto.titulo} - ${producto.valor}'),
+                subtitle: Text(producto.id),
+                onTap: () => Navigator.pushNamed(context, 'producto',
+                    arguments: producto),
+              ),
+            ],
+          ),
+        ));
+
+    // child: ListTile(
+    //     title: Text('${producto.titulo} - ${producto.valor}'),
+    //     subtitle: Text(producto.id),
+    //     onTap: () => Navigator.pushNamed(context, 'producto',arguments: producto),
+    //   ),
   }
 }
