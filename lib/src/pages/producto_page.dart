@@ -1,10 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
+import 'package:formavalidation/src/blocs/productos_bloc.dart';
+import 'package:formavalidation/src/blocs/provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:formavalidation/src/models/producto_model.dart';
-import 'package:formavalidation/src/providers/productos_provider.dart';
 import 'package:formavalidation/src/utils/utils.dart' as utils;
 
 class ProductoPage extends StatefulWidget {
@@ -15,12 +15,16 @@ class ProductoPage extends StatefulWidget {
 class _ProductoPageState extends State<ProductoPage> {
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  ProductosBloc productosBloc;
   ProductoModel producto = new ProductoModel();
   bool _guardando = false;
   File foto;
 
   @override
   Widget build(BuildContext context) {
+    productosBloc = Provider.productosBloc(context);
+
     final ProductoModel prodData = ModalRoute.of(context).settings.arguments;
     if (prodData != null) {
       producto = prodData;
@@ -147,21 +151,21 @@ class _ProductoPageState extends State<ProductoPage> {
     print('Producto: ${producto.titulo}');
     print('Precio: ${producto.valor}');
 
-    final productoProvider = new ProductosProvider();
-
     if (foto != null) {
-      producto.fotoUrl = await productoProvider.subirImagen(foto);
+      producto.fotoUrl = await productosBloc.subirFoto(foto);
     }
 
     if (producto.id == null) {
-      final FormatResult resCrear =
-          await productoProvider.crearProducto(producto);
-      if (resCrear.ok) {
-        producto.id = resCrear.id;
-      }
+      // final FormatResult resCrear =
+      //     await productosBloc.crearProducto(producto);
+      productosBloc.agregarProducto(producto);
+      // if (resCrear.ok) {
+      //   producto.id = resCrear.id;
+      // }
     } else {
-      final FormatResult resEditar =
-          await productoProvider.editarProducto(producto);
+      // final FormatResult resEditar =
+      //     await productoProvider.editarProducto(producto);
+      productosBloc.editarProducto(producto);
     }
 
     setState(() {
