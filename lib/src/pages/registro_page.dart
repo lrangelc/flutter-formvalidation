@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:formavalidation/src/blocs/provider.dart';
 import 'package:formavalidation/src/providers/usuario_provider.dart';
+import 'package:formavalidation/src/utils/utils.dart' as utils;
 
 class RegistroPage extends StatelessWidget {
   final usuarioProvider = new UsuarioProvider();
@@ -131,7 +132,7 @@ class RegistroPage extends StatelessWidget {
         return RaisedButton(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-            child: Text('Sign In'),
+            child: Text('Sign Up'),
           ),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -144,12 +145,18 @@ class RegistroPage extends StatelessWidget {
     );
   }
 
-  _register(BuildContext context, LoginBloc bloc) {
+  _register(BuildContext context, LoginBloc bloc) async {
     print('Email: ${bloc.email}');
     print('Password: ${bloc.password}');
 
-    usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
+    Map info = await usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
     // Navigator.pushReplacementNamed(context, 'home');
+
+    if (info['ok']) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      utils.mostrarAlerta(context, info['message']);
+    }
   }
 
   Widget _crearFondo(BuildContext context) {

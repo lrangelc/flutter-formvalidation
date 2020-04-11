@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:formavalidation/src/preferencias_usuario/preferencias_usuario.dart';
 import 'package:http/http.dart' as http;
 import 'package:formavalidation/src/models/producto_model.dart';
 import 'package:mime_type/mime_type.dart';
@@ -14,9 +15,10 @@ class FormatResult {
 
 class ProductosProvider {
   final String _url = 'https://fixx-sandbox.firebaseio.com';
+  final _prefs = new PreferenciasUsuario();
 
   Future<FormatResult> crearProducto(ProductoModel producto) async {
-    final url = '$_url/productos.json';
+    final url = '$_url/productos.json?auth=${_prefs.token}';
     final resp = await http.post(url, body: productoModelToJson(producto));
     final decodedData = json.decode(resp.body);
     print(decodedData);
@@ -25,7 +27,7 @@ class ProductosProvider {
   }
 
   Future<FormatResult> editarProducto(ProductoModel producto) async {
-    final url = '$_url/productos/${producto.id}.json';
+    final url = '$_url/productos/${producto.id}.json?auth=${_prefs.token}';
     final resp = await http.put(url, body: productoModelToJson(producto));
     final decodedData = json.decode(resp.body);
     print(decodedData);
@@ -33,7 +35,7 @@ class ProductosProvider {
   }
 
   Future<List<ProductoModel>> cargarProductos() async {
-    final url = '$_url/productos.json';
+    final url = '$_url/productos.json?auth=${_prefs.token}';
     final resp = await http.get(url);
     final Map<String, dynamic> decodedData = json.decode(resp.body);
     final List<ProductoModel> productos = new List();
@@ -50,7 +52,7 @@ class ProductosProvider {
   }
 
   Future<int> borrarProducto(String id) async {
-    final url = '$_url/productos/$id.json';
+    final url = '$_url/productos/$id.json?auth=${_prefs.token}';
     final resp = await http.delete(url);
     print(json.decode(resp.body));
 

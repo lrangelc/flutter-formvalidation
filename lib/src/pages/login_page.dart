@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:formavalidation/src/blocs/provider.dart';
 import 'package:formavalidation/src/providers/usuario_provider.dart';
+import 'package:formavalidation/src/utils/utils.dart' as utils;
 
 class LoginPage extends StatelessWidget {
   final usuarioProvider = new UsuarioProvider();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,11 +146,15 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _login(BuildContext context, LoginBloc bloc) {
+  _login(BuildContext context, LoginBloc bloc) async {
     print('Email: ${bloc.email}');
     print('Password: ${bloc.password}');
-    usuarioProvider.login(bloc.email, bloc.password);
-    // Navigator.pushReplacementNamed(context, 'home');
+    Map info = await usuarioProvider.login(bloc.email, bloc.password);
+    if (info['ok']) {
+      Navigator.pushReplacementNamed(context, 'home');
+    } else {
+      utils.mostrarAlerta(context, info['message']);
+    }
   }
 
   Widget _crearFondo(BuildContext context) {
