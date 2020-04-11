@@ -3,15 +3,30 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:formavalidation/src/models/producto_model.dart';
 
+class FormatResult {
+  bool ok;
+  String id;
+  FormatResult(this.ok, this.id);
+}
+
 class ProductosProvider {
   final String _url = 'https://fixx-sandbox.firebaseio.com';
 
-  Future<bool> crearProducto(ProductoModel producto) async {
+  Future<FormatResult> crearProducto(ProductoModel producto) async {
     final url = '$_url/productos.json';
     final resp = await http.post(url, body: productoModelToJson(producto));
     final decodedData = json.decode(resp.body);
     print(decodedData);
-    return true;
+
+    return new FormatResult(true, decodedData['name']);
+  }
+
+  Future<FormatResult> editarProducto(ProductoModel producto) async {
+    final url = '$_url/productos/${producto.id}.json';
+    final resp = await http.put(url, body: productoModelToJson(producto));
+    final decodedData = json.decode(resp.body);
+    print(decodedData);
+    return new FormatResult(true, producto.id);
   }
 
   Future<List<ProductoModel>> cargarProductos() async {
